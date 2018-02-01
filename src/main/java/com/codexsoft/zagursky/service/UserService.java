@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Dzenyaa on 26.01.2018.
  */
 public interface UserService {
-    List<User> getDevelopersbyfilter(String name,String lastName);
+    List<User> getDevelopersbyfilter(String name, String lastName);
 
     User createUser(User user, String role) throws CustomException;
 

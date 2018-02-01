@@ -1,7 +1,6 @@
 package com.codexsoft.zagursky.entity;
 
 import com.codexsoft.zagursky.entity.status.TaskStatus;
-import com.codexsoft.zagursky.service.TaskService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -40,15 +39,22 @@ public class Task {
 
     @OneToMany(mappedBy = "task")
     @JsonIgnore
-    private List<Comment> comments=new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_task",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
-    private List<User> users=new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
+
+    public Task(String name, String description, Project project) {
+        taskStatus = TaskStatus.WAITING;
+        this.name = name;
+        this.description = description;
+        this.project = project;
+    }
 
     public void addUserToTask(User user) {
         users.add(user);
@@ -56,12 +62,5 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
-    }
-
-    public Task(String name, String description, Project project) {
-        taskStatus= TaskStatus.WAITING;
-        this.name = name;
-        this.description = description;
-        this.project = project;
     }
 }

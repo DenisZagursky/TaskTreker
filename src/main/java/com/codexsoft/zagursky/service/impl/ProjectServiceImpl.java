@@ -25,6 +25,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Override
     public void createProject(Project project) {
         projectRepository.save(project);
@@ -33,13 +34,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void addProjectToUser(Long id, String username) throws CustomException {
-        Project project=projectRepository.findOne(id);
-        User user=userRepository.findByUsername(username);
-        if ((project==null) ||(user.getEnabled()!=true)|| (user==null) ||(project.getUsers().contains(user))|| (user.getAuthority().getRole().equals("ROLE_ADMIN")))
-        {
+        Project project = projectRepository.findOne(id);
+        User user = userRepository.findByUsername(username);
+        if ((project == null) || (user.getEnabled() != true) || (user == null) || (project.getUsers().contains(user)) || (user.getAuthority().getRole().equals("ROLE_ADMIN"))) {
             throw new CustomException("Такого пользователя не существует, либо он уже работает над проектом");
-        }
-        else {
+        } else {
             project.getUsers().add(user);
         }
     }
@@ -59,18 +58,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(readOnly = true)
     public List<Project> findProjectsByUser() {
-        String username= SecurityContextHolder.getContext().getAuthentication().getName();
-        User user=userRepository.findByUsername(username);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
         return user.getProjects();
     }
 
     @Override
     public void saveProject(String name, String description) {
-        Project project=new Project();
+        Project project = new Project();
         project.setName(name);
         project.setDescription(description);
-        String username= SecurityContextHolder.getContext().getAuthentication().getName();
-        User user=userRepository.findByUsername(username);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
         project.getUsers().add(user);
         projectRepository.save(project);
     }

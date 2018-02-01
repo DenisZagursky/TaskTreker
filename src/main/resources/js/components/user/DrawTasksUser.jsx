@@ -9,6 +9,7 @@ export default class DrawTasksUser extends React.Component {
         super(props);
         this.state = {tasks: []};
         this.loadData=this.loadData.bind(this)
+        this.onChange=this.onChange.bind(this)
     }
     componentDidMount() {
         this.loadData();
@@ -21,9 +22,13 @@ export default class DrawTasksUser extends React.Component {
 
         })
     }
+    onChange(){
+        this.loadData();
+    }
     render() {
         return (<div>
                 <TaskTable tasks={this.state.tasks}/>
+                <AddTask onChange={this.onChange}/>
             </div>
         )
     }
@@ -98,4 +103,64 @@ class Task extends React.Component{
 
     }
 
+}
+
+class AddTask extends React.Component{
+    constructor(props) {
+        super(props);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleChangeTaskname = this.handleChangeTaskname.bind(this);
+        this.handleChangeTaskDescription = this.handleChangeTaskDescription.bind(this);
+        this.state = {taskname: '', taskdescription: ''};
+    }
+
+    handleAdd() {
+        var self = this
+        var position=window.location.href.lastIndexOf("/");
+        debugger
+        jquery.ajax({
+            url: "http://localhost:8080/tasks/"+window.location.href.slice(position)+
+            "/"+self.state.taskname+"/"+self.state.taskdescription,
+            type: 'POST',
+            success: function (result) {
+                toastr.info("таск успешно создан")
+                self.props.onChange();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                toastr.error(xhr.status + " Ошибка при создании таска");
+            }
+        });
+    }
+
+    handleChangeTaskname(event) {
+        this.setState({taskname: event.target.value})
+    }
+
+    handleChangeTaskDescription(event) {
+        this.setState({taskdescription: event.target.value})
+    }
+
+    render() {
+        return (
+            <tr>
+                <td ><input type="text"
+                            onChange={this.handleChangeTaskname}
+                            value={this.state.taskname}
+                            class="form-control"
+                /></td>
+                <td><input type="text"
+                           onChange={this.handleChangeTaskDescription}
+                           value={this.state.taskdescription}
+                           class="form-control"
+                /></td>
+                <td>
+                    <button className="btn btn-info"
+                            onClick={this.handleAdd}
+                    >Добавить таск
+                    </button>
+                </td>
+            </tr>
+
+        );
+    }
 }

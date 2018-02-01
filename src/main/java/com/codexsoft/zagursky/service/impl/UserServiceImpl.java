@@ -36,17 +36,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user, String role) throws CustomException{
-        if (role.equals("admin"))
-        {
-            Authority authority=authorityRepository.findOne((long)1);
+    public User createUser(User user, String role) throws CustomException {
+        if (role.equals("admin")) {
+            Authority authority = authorityRepository.findOne((long) 1);
             user.setAuthority(authority);
         } else {
-            Authority authority=authorityRepository.findOne((long)2);
+            Authority authority = authorityRepository.findOne((long) 2);
             user.setAuthority(authority);
         }
         user.setEnabled(false);
-        if (userRepository.findByUsername(user.getUsername())!=null){
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new CustomException("такой пользователь уже есть");
         }
         userRepository.save(user);
@@ -55,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken verificationToken=new VerificationToken();
+        VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
         tokenRepository.save(verificationToken);

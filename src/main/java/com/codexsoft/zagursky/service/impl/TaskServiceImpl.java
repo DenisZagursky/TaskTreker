@@ -33,13 +33,15 @@ public class TaskServiceImpl implements TaskService {
     private UserRepository userRepository;
 
     @Override
-    public void saveTask(Long idProject, String name, String description) throws CustomException{
-        Project project=projectRepository.findOne(idProject);
-        if (project==null)
-        {
+    public void saveTask(Long idProject, String name, String description) throws CustomException {
+        Project project = projectRepository.findOne(idProject);
+        if (project == null) {
             throw new CustomException("проект не найден");
         }
-        Task task = new Task(name, description,project);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username);
+        Task task = new Task(name, description, project);
+        task.getUsers().add(user);
         taskRepository.save(task);
     }
 
@@ -50,12 +52,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void addDeveloperToTask(Long idTask, String username) throws  CustomException {
+    public void addDeveloperToTask(Long idTask, String username) throws CustomException {
         Task task = taskRepository.getOne(idTask);
-        User developer=userRepository.findByUsername(username);
+        User developer = userRepository.findByUsername(username);
 
-        if ((task==null) || (developer.getEnabled()!=true)|| (developer==null) ||(task.getUsers().contains(developer))|| (developer.getAuthority().getRole()=="ROLE_ADMIN"))
-        {
+        if ((task == null) || (developer.getEnabled() != true) || (developer == null) || (task.getUsers().contains(developer)) || (developer.getAuthority().getRole() == "ROLE_ADMIN")) {
             throw new CustomException("Такого пользователя не существует, либо он уже работает над проектом");
         }
         task.addUserToTask(developer);
@@ -71,20 +72,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<HashMap<String,String>> getTasksByUser() {
-        String username= SecurityContextHolder.getContext().getAuthentication().getName();
-        List<HashMap<String,String>> result=new ArrayList<HashMap<String, String>>();
-      List<Task> tasks= taskRepository.getTasksByUsers_Id(userRepository.findByUsername(username).getId());
-      for (Task task:tasks)
-      {
-          HashMap<String,String> information=new HashMap<>();
-          information.put("projectid",task.getProject().getId().toString());
-          information.put("project",task.getProject().getName());
-          information.put("task",task.getName());
-          information.put("taskid",task.getId().toString());
-          information.put("status",task.getTaskStatus().toString());
-          result.add(information);
-      }
-      return result;
+    public List<HashMap<String, String>> getTasksByUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
+        List<Task> tasks = taskRepository.getTasksByUsers_Id(userRepository.findByUsername(username).getId());
+        for (Task task : tasks) {
+            HashMap<String, String> information = new HashMap<>();
+            information.put("projectid", task.getProject().getId().toString());
+            information.put("project", task.getProject().getName());
+            information.put("task", task.getName());
+            information.put("taskid", task.getId().toString());
+            information.put("status", task.getTaskStatus().toString());
+            result.add(information);
+        }
+        return result;
     }
 }

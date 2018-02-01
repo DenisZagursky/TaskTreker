@@ -30,7 +30,7 @@ public class Authority implements GrantedAuthority {
 
     @OneToMany(mappedBy = "authority", fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<User> users=new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     @Override
     public String getAuthority() {

@@ -1,7 +1,6 @@
 package com.codexsoft.zagursky.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class Project {
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Task> tasks=new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();
 
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -39,7 +38,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
-    private List<User> users=new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     public Project(String name, String description) {
         this.name = name;

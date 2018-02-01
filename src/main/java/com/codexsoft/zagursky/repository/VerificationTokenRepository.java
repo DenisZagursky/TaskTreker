@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by Dzenyaa on 31.01.2018.
  */
 @Repository
-public interface VerificationTokenRepository extends CrudRepository<VerificationToken,Long> {
+public interface VerificationTokenRepository extends CrudRepository<VerificationToken, Long> {
 
     VerificationToken getVerificationTokenByToken(String token);
 }

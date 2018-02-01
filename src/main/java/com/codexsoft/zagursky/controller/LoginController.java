@@ -39,12 +39,18 @@ public class LoginController {
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
     ResponseEntity getAuth() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username);
         HashMap<String, String> result = new HashMap<>();
-        result.put("status", user.getAuthority().getRole());
-        result.put("name", user.getName());
-        result.put("lastname", user.getLastName());
+        try {
+
+
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userRepository.findByUsername(username);
+            result.put("status", user.getAuthority().getRole());
+            result.put("name", user.getName());
+            result.put("lastname", user.getLastName());
+        } catch (Exception ex) {
+            return new ResponseEntity(HttpStatus.BAD_GATEWAY);
+        }
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
@@ -59,26 +65,26 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    String registration(@ModelAttribute User user,
-                        @RequestParam(defaultValue = "user") String role,
-                        BindingResult result,
-                        WebRequest request,
-                        Errors errors) throws Exception {
+    ResponseEntity registration(@ModelAttribute User user,
+                                @RequestParam(defaultValue = "user") String role,
+                                BindingResult result,
+                                WebRequest request,
+                                Errors errors) throws Exception {
         if (!EmailValidator.isValidEmailAddress(user.getUsername())) {
-            return "redirect:/registration?valid";
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         try {
 
             user = userService.createUser(user, role);
         } catch (CustomException ex) {
-            return "redirect:/registration?exist";
+            return new ResponseEntity(HttpStatus.BAD_GATEWAY);
         }
         String appUrl = request.getContextPath();
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent
                 (user, request.getLocale(), appUrl));
 
 
-        return "redirect:/registration?good";
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/regitrationConfirm", method = RequestMethod.GET)
@@ -92,7 +98,7 @@ public class LoginController {
         User user = verificationToken.getUser();
         user.setEnabled(true);
         userRepository.save(user);
-        return "redirect:/login";
+        return "redirect:/";
     }
 
 }

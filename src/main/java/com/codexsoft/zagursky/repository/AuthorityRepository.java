@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Created by Dzenyaa on 31.01.2018.
  */
 @Repository
-public interface AuthorityRepository extends CrudRepository<Authority,Long>{
+public interface AuthorityRepository extends CrudRepository<Authority, Long> {
 }

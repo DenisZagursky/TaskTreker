@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    void saveComment(Long id,String description);
+    void saveComment(Long id, String description);
 
     void deleteComment(Long id) throws CustomException;
 
@@ -20,5 +20,5 @@ public interface CommentService {
 
     List<Comment> getCommentByTask(Long id);
 
-    HashMap<String,String> getNameAndLastNameByComment(Long id);
+    HashMap<String, String> getNameAndLastNameByComment(Long id);
 }

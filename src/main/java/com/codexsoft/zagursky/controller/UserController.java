@@ -40,29 +40,30 @@ public class UserController {
 
     @RequestMapping(value = "/comments/{id}", method = RequestMethod.GET)
     ResponseEntity getComments(@PathVariable Long id) {
-        return new ResponseEntity(commentService.getCommentByTask(id),HttpStatus.OK);
+        return new ResponseEntity(commentService.getCommentByTask(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/comments/user/{id}", method = RequestMethod.GET)
     ResponseEntity getUserByComment(@PathVariable Long id) {
-     HashMap<String,String> result=commentService.getNameAndLastNameByComment(id);
-     return new ResponseEntity(result,HttpStatus.OK);
+        HashMap<String, String> result = commentService.getNameAndLastNameByComment(id);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
-    @RequestMapping(value = "/comments/{id}/{description}",method = RequestMethod.PUT)
-    ResponseEntity updateComment(@PathVariable Long id,@PathVariable String description) throws CustomException
-    {
-        commentService.changeComment(id,description);
+
+    @RequestMapping(value = "/comments/{id}/{description}", method = RequestMethod.PUT)
+    ResponseEntity updateComment(@PathVariable Long id, @PathVariable String description) throws CustomException {
+        commentService.changeComment(id, description);
         return new ResponseEntity(HttpStatus.OK);
     }
-    @RequestMapping(value = "/comments/{id}",method = RequestMethod.DELETE)
+
+    @RequestMapping(value = "/comments/{id}", method = RequestMethod.DELETE)
     ResponseEntity deleteComment(@PathVariable Long id) throws CustomException {
         commentService.deleteComment(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/comments/{id}/{description}",method = RequestMethod.POST)
-    ResponseEntity createComment( @PathVariable Long id,@PathVariable String description){
-        commentService.saveComment(id,description);
+    @RequestMapping(value = "/comments/{id}/{description}", method = RequestMethod.POST)
+    ResponseEntity createComment(@PathVariable Long id, @PathVariable String description) {
+        commentService.saveComment(id, description);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -78,8 +79,8 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/tasks/filter",method = RequestMethod.GET)
-    ResponseEntity getFilter(){
-        return new ResponseEntity(taskService.getTasksByUser(),HttpStatus.OK);
+    @RequestMapping(value = "/tasks/filter", method = RequestMethod.GET)
+    ResponseEntity getFilter() {
+        return new ResponseEntity(taskService.getTasksByUser(), HttpStatus.OK);
     }
 }

@@ -19,12 +19,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Order
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private CustomDetailServiceImpl detailService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login","/registration","/regitrationConfirm*").permitAll()
+                .antMatchers("/registration", "/regitrationConfirm*", "/", "/auth", "/built/bundle.js", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -36,10 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
     }
-
-
-    @Autowired
-    private CustomDetailServiceImpl detailService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
